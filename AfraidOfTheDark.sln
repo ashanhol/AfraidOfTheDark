@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AfraidOfTheDark.CSharp", "AfraidOfTheDark.CSharp.csproj", "{B0AEF51A-78C1-BB3A-60F2-85156B048195}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AfraidOfTheDark.CSharp.Editor", "AfraidOfTheDark.CSharp.Editor.csproj", "{6EDD1E6F-2F16-878B-60DE-A8CD67BAAF79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0AEF51A-78C1-BB3A-60F2-85156B048195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0AEF51A-78C1-BB3A-60F2-85156B048195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0AEF51A-78C1-BB3A-60F2-85156B048195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0AEF51A-78C1-BB3A-60F2-85156B048195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EDD1E6F-2F16-878B-60DE-A8CD67BAAF79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EDD1E6F-2F16-878B-60DE-A8CD67BAAF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EDD1E6F-2F16-878B-60DE-A8CD67BAAF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EDD1E6F-2F16-878B-60DE-A8CD67BAAF79}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
