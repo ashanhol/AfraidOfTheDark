@@ -10,11 +10,14 @@ public class GameController : MonoBehaviour {
     public Button raiseLights;
     public Light lights;
     public GameObject dialoguebox;
+   
 
     private string dialogueText;
     private string momText;
     private char[] dialogueArr;
     private ArrayList dialogueList;
+    private GameObject[] enemies;
+    private GameObject spawnedEnemy;
 
     private float seconds;
     int i; 
@@ -23,6 +26,7 @@ public class GameController : MonoBehaviour {
 
         dialogue.text = "";
         momDialogue.text = "";
+        
         /*dimLights.GetComponent <Image>().enabled = false;
         dimLights.GetComponent<Button>().enabled = false;
         dimLights.GetComponentInChildren<Text>().enabled = false;
@@ -44,6 +48,13 @@ public class GameController : MonoBehaviour {
 
         seconds = .08f;
         StartCoroutine(WriteToBox());
+
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach(GameObject enemy in enemies)
+        {
+            enemy.GetComponent<Renderer>().enabled = false;
+        }
+
        
 
     }
@@ -74,15 +85,16 @@ public class GameController : MonoBehaviour {
     }
     
 
-    //Turn the lights on and off. AdjustLights is a wrapper for the other function. 
-    public void AdjustLights()
+    //Turn the lights off. DimLights is a wrapper for the other function. 
+    public void DimLights()
     {
         print("successful");
-        StartCoroutine(LightAdjust());
+        StartCoroutine(LightDim());
     
     }
-    IEnumerator LightAdjust()
+    IEnumerator LightDim()
     {
+        ToggleDimLights();
         while (lights.intensity >= .38)
         {
             yield return new WaitForSeconds(seconds);
@@ -90,14 +102,39 @@ public class GameController : MonoBehaviour {
             lights.intensity -= .01f;
         }
         dialoguebox.GetComponent<SpriteRenderer>().enabled = false;
-        ToggleDimLights();
         momDialogue.text = "";
-        ToggleRaiseLights();
 
+        StartCoroutine(EnemySpawn());
+    }
+    public void RaiseLights()
+    {
+        print("successful!!");
+        StartCoroutine(LightRaise());
+    }
+    IEnumerator LightRaise()
+    {
+        ToggleRaiseLights();
+        while (lights.intensity <= 1.11)
+        {
+            yield return new WaitForSeconds(seconds);
+
+            lights.intensity += .01f;
+        }
+        spawnedEnemy.GetComponent<Renderer>().enabled = false;
+        ToggleDimLights();
 
     }
 
+    IEnumerator EnemySpawn()
+    {
+        yield return new WaitForSeconds(2);
+        spawnedEnemy = enemies[Random.Range(0, 4)];
+        spawnedEnemy.GetComponent<Renderer>().enabled = true;
+        ToggleRaiseLights();
 
+    }
+
+    //Toggles buttons from visible/invisible 
     void ToggleDimLights()
     {
         if (dimLights.GetComponent<Image>().enabled)
