@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour {
 
     public Text dialogue;
     public Text momDialogue;
+    public Text Score;
     public Button dimLights;
     public Button raiseLights;
     public Light lights;
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour {
     private ArrayList dialogueList;
     private GameObject[] enemies;
     private GameObject spawnedEnemy;
+    private int counter;
 
     private float seconds;
     int i; 
@@ -26,6 +28,8 @@ public class GameController : MonoBehaviour {
 
         dialogue.text = "";
         momDialogue.text = "";
+        Score.text = "";
+        counter = 0; 
         
         /*dimLights.GetComponent <Image>().enabled = false;
         dimLights.GetComponent<Button>().enabled = false;
@@ -88,6 +92,7 @@ public class GameController : MonoBehaviour {
     //Turn the lights off. DimLights is a wrapper for the other function. 
     public void DimLights()
     {
+        Score.text = "Score: " + counter; 
         print("successful");
         StartCoroutine(LightDim());
     
@@ -108,6 +113,7 @@ public class GameController : MonoBehaviour {
     }
     public void RaiseLights()
     {
+        Score.text = "Score: " + counter;
         print("successful!!");
         StartCoroutine(LightRaise());
     }
@@ -131,6 +137,7 @@ public class GameController : MonoBehaviour {
         spawnedEnemy = enemies[Random.Range(0, 4)];
         spawnedEnemy.GetComponent<Renderer>().enabled = true;
         ToggleRaiseLights();
+        counter++;
 
     }
 

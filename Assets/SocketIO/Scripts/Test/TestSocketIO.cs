@@ -40,54 +40,37 @@ public class TestSocketIO : MonoBehaviour
 		socket = go.GetComponent<SocketIOComponent>();
 
 		socket.On("open", TestOpen);
-		socket.On("boop", TestBoop);
+		socket.On("message",OnMessage);
+		socket.On("welcome",OnWelcome);
 		socket.On("error", TestError);
 		socket.On("close", TestClose);
-		
-		StartCoroutine("BeepBoop");
+
+	}
+	
+	public void OnMessage(SocketIOEvent e)
+	{
+		Debug.Log("[SocketIO] OnMessage : " + e.name + " " + e.data);
+	}
+	
+	public void OnWelcome(SocketIOEvent e)
+	{
+		Debug.Log("[SocketIO] On Welcome: " + e.name + " " + e.data);
+	}
+	
+	// Added a onclick for a button event to send something
+	public void OnClick(){
+		Debug.Log("OnClick >>>");
+		socket.Emit("message");
 	}
 
-	private IEnumerator BeepBoop()
-	{
-		// wait 1 seconds and continue
-		yield return new WaitForSeconds(1);
-		
-		socket.Emit("beep");
-		
-		// wait 3 seconds and continue
-		yield return new WaitForSeconds(3);
-		
-		socket.Emit("beep");
-		
-		// wait 2 seconds and continue
-		yield return new WaitForSeconds(2);
-		
-		socket.Emit("beep");
-		
-		// wait ONE FRAME and continue
-		yield return null;
-		
-		socket.Emit("beep");
-		socket.Emit("beep");
-	}
+	
 
 	public void TestOpen(SocketIOEvent e)
 	{
 		Debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
 	}
 	
-	public void TestBoop(SocketIOEvent e)
-	{
-		Debug.Log("[SocketIO] Boop received: " + e.name + " " + e.data);
-
-		if (e.data == null) { return; }
-
-		Debug.Log(
-			"#####################################################" +
-			"THIS: " + e.data.GetField("this").str +
-			"#####################################################"
-		);
-	}
+	
 	
 	public void TestError(SocketIOEvent e)
 	{
