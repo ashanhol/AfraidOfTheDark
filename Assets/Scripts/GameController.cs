@@ -22,7 +22,8 @@ public class GameController : MonoBehaviour {
     private int counter;
 
     private float seconds;
-    int i; 
+    int i;
+    public int lightLevel; //grabs light level data from arduino
     // Use this for initialization
     void Start () {
 
@@ -102,9 +103,11 @@ public class GameController : MonoBehaviour {
         ToggleDimLights();
         while (lights.intensity >= .38)
         {
-            yield return new WaitForSeconds(seconds);
+            if (lightLevel < 128) { 
+                yield return new WaitForSeconds(seconds);
 
-            lights.intensity -= .01f;
+                lights.intensity -= .01f;
+            }
         }
         dialoguebox.GetComponent<SpriteRenderer>().enabled = false;
         momDialogue.text = "";
@@ -122,9 +125,11 @@ public class GameController : MonoBehaviour {
         ToggleRaiseLights();
         while (lights.intensity <= 1.11)
         {
-            yield return new WaitForSeconds(seconds);
+            if (lightLevel >= 128) { 
+                yield return new WaitForSeconds(seconds);
 
-            lights.intensity += .01f;
+                lights.intensity += .01f;
+            }
         }
         spawnedEnemy.GetComponent<Renderer>().enabled = false;
         ToggleDimLights();

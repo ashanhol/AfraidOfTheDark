@@ -29,14 +29,25 @@
 using System.Collections;
 using UnityEngine;
 using SocketIO;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Collections.Generic;
+using System;
+
+
 
 public class TestSocketIO : MonoBehaviour
 {
 	private SocketIOComponent socket;
+    GameObject GameControllerObject;
+    GameController gameController; 
 
 	public void Start() 
 	{
-		GameObject go = GameObject.Find("SocketIO");
+        GameControllerObject = GameObject.FindGameObjectWithTag("GameController");
+        gameController = GameControllerObject.GetComponent<GameController>();
+
+        GameObject go = GameObject.Find("SocketIO");
 		socket = go.GetComponent<SocketIOComponent>();
 
 		socket.On("open", TestOpen);
@@ -50,7 +61,19 @@ public class TestSocketIO : MonoBehaviour
 	public void OnMessage(SocketIOEvent e)
 	{
 		Debug.Log("[SocketIO] OnMessage : " + e.name + " " + e.data);
-	}
+        Regex rx = new Regex(@"([^{.datas.:])([\d])+");
+        MatchCollection matches = rx.Matches(e.data.ToString());
+        foreach (Match match in matches)
+        {
+            char[] charsToTrim = { '\"' };
+            string complete = match.ToString().Trim(charsToTrim);
+            Debug.Log(Int32.Parse(complete));
+            gameController.lightLevel = Int32.Parse(complete);
+
+        }
+
+        // Debug.Log("thing" + e.data.ToString());
+    }
 	
 	public void OnWelcome(SocketIOEvent e)
 	{
@@ -81,4 +104,5 @@ public class TestSocketIO : MonoBehaviour
 	{	
 		Debug.Log("[SocketIO] Close received: " + e.name + " " + e.data);
 	}
+
 }
