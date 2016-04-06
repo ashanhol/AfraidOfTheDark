@@ -21,7 +21,9 @@ public class GameController : MonoBehaviour {
     private GameObject spawnedEnemy;
     private int counter;
 
+    private const float transitionTime = 3.0f;
     private float seconds;
+    private float dimTime;
     int i;
     public int lightLevel; //grabs light level data from arduino
     // Use this for initialization
@@ -30,7 +32,8 @@ public class GameController : MonoBehaviour {
         dialogue.text = "";
         momDialogue.text = "";
         Score.text = "";
-        counter = 0; 
+        counter = 0;
+        dimTime = 0;
         
         /*dimLights.GetComponent <Image>().enabled = false;
         dimLights.GetComponent<Button>().enabled = false;
