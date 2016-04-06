@@ -21,7 +21,11 @@ public class GameController : MonoBehaviour {
     private GameObject spawnedEnemy;
     private int counter;
 
+    private const float transitionTime = 3.0f;
     private float seconds;
+    private bool dimming;
+    private bool brighten;
+    private bool enemySpawned;
     int i;
     public int lightLevel; //grabs light level data from arduino
     // Use this for initialization
@@ -30,7 +34,10 @@ public class GameController : MonoBehaviour {
         dialogue.text = "";
         momDialogue.text = "";
         Score.text = "";
-        counter = 0; 
+        counter = 0;
+        dimming = false;
+        brighten = false;
+        enemySpawned = false;
         
         /*dimLights.GetComponent <Image>().enabled = false;
         dimLights.GetComponent<Button>().enabled = false;
@@ -39,8 +46,8 @@ public class GameController : MonoBehaviour {
         raiseLights.GetComponent<Image>().enabled = false;
         raiseLights.GetComponent<Button>().enabled = false;
         raiseLights.GetComponentInChildren<Text>().enabled = false;*/
-        ToggleDimLights();
-        ToggleRaiseLights();
+        ToggleDimLights(false);
+        ToggleRaiseLights(false);
 
         dialogueList = new ArrayList();
         dialogueText = "It's time for bed. Again. I'm never ready for Mom to turn out the " +
@@ -85,7 +92,7 @@ public class GameController : MonoBehaviour {
             momDialogue.text = momDialogue.text + dialogueArr[i];
             yield return new WaitForSeconds(seconds);
         }
-        ToggleDimLights();
+        ToggleDimLights(true);
         
     }
     
@@ -94,46 +101,71 @@ public class GameController : MonoBehaviour {
     public void DimLights()
     {
         Score.text = "Score: " + counter; 
-        print("successful");
-        StartCoroutine(LightDim());
-    
-    }
-    IEnumerator LightDim()
-    {
-        ToggleDimLights();
-        while (lights.intensity >= .38)
-        {
-            if (lightLevel < 128) { 
-                yield return new WaitForSeconds(seconds);
 
-                lights.intensity -= .01f;
-            }
-        }
+        dimming = true;
+        brighten = false;
         dialoguebox.GetComponent<SpriteRenderer>().enabled = false;
         momDialogue.text = "";
-
-        StartCoroutine(EnemySpawn());
+        ToggleDimLights(false);
     }
+
     public void RaiseLights()
     {
         Score.text = "Score: " + counter;
-        print("successful!!");
-        StartCoroutine(LightRaise());
-    }
-    IEnumerator LightRaise()
-    {
-        ToggleRaiseLights();
-        while (lights.intensity <= 1.11)
-        {
-            if (lightLevel >= 128) { 
-                yield return new WaitForSeconds(seconds);
 
-                lights.intensity += .01f;
+        dimming = false;
+        brighten = true;
+        EnemySpawned = false;
+        spawnedEnemy.GetComponent<Renderer>().enabled = false;
+        ToggleDimLights(true);
+        ToggleRaiseLights(false);
+    }
+
+    void Update()
+    {
+        if (lightLevel >= 128)
+        {
+            if (brighten == false)
+            {
+                RaiseLights();
             }
         }
-        spawnedEnemy.GetComponent<Renderer>().enabled = false;
-        ToggleDimLights();
+        else
+        {
+            if (dimming == false)
+            {
+                DimLights();
+            }
+        }
 
+        if (dimming == true)
+        {
+            if (lights.intensity > 0.38f)
+            {
+                lights.intensity = lights.intensity - 0.01f * Time.deltaTime;
+            }
+            else
+            {
+                if (enemySpawned == false)
+                {
+                    StartCoroutine(EnemySpawn());
+                    EnemySpawned = true;
+                }
+                dimming = false;
+            }
+        }
+        else if (brighten == true)
+        {
+            if (lights.intensity < 1.11f)
+            {
+                lights.intensity = lights.intensity + 0.01f * Time.deltaTime;
+            }
+            else
+            {
+                lights.intensity = 1.11f;
+                brighten = false;
+            }
+        }
     }
 
     IEnumerator EnemySpawn()
@@ -141,15 +173,15 @@ public class GameController : MonoBehaviour {
         yield return new WaitForSeconds(2);
         spawnedEnemy = enemies[Random.Range(0, 4)];
         spawnedEnemy.GetComponent<Renderer>().enabled = true;
-        ToggleRaiseLights();
+        ToggleRaiseLights(true);
         counter++;
 
     }
 
     //Toggles buttons from visible/invisible 
-    void ToggleDimLights()
+    void ToggleDimLights(bool enabled)
     {
-        if (dimLights.GetComponent<Image>().enabled)
+        if (!enabled)
         {
             dimLights.GetComponent<Image>().enabled = false;
             dimLights.GetComponent<Button>().enabled = false;
@@ -162,9 +194,9 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    void ToggleRaiseLights()
+    void ToggleRaiseLights(bool enabled)
     {
-        if (raiseLights.GetComponent<Image>().enabled)
+        if (!enabled)
         {
             raiseLights.GetComponent<Image>().enabled = false;
             raiseLights.GetComponent<Button>().enabled = false;
