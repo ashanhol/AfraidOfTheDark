@@ -98,25 +98,30 @@ public class GameController : MonoBehaviour {
     {
         Score.text = "Score: " + counter; 
         print("successful");
-        StartCoroutine(LightDim());
-    
-    }
-    IEnumerator LightDim()
-    {
-        ToggleDimLights();
-        while (lights.intensity >= .38)
-        {
-            if (lightLevel < 128) { 
-                yield return new WaitForSeconds(seconds);
 
-                lights.intensity -= .01f;
-            }
-        }
+        dimTime = 0.01f;
         dialoguebox.GetComponent<SpriteRenderer>().enabled = false;
         momDialogue.text = "";
-
-        StartCoroutine(EnemySpawn());
     }
+
+    void Update()
+    {
+        if (dimTime > 0)
+        {
+            dimTime = dimTime + Time.deltaTime();
+            if (dimTime > transitionTime)
+            {
+                lights.intensity = 0.38f;
+                StartCoroutine(EnemySpawn());
+            }
+            else
+            {
+                // Brightest is 1.11, darkest is .38, difference is 0.73
+                lights.intensity = 0.38 + ((0.73) * ((transitionTime - dimTime) / transitionTime));
+            }
+        }
+    }
+
     public void RaiseLights()
     {
         Score.text = "Score: " + counter;
